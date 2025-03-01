@@ -1,21 +1,18 @@
 const net = require('net');
 
-var server_port = 65432;
+var server_port = 1030;
 var server_addr = "172.20.68.125";   // the IP address of your Raspberry PI
 
-function client() {
-    var input = document.getElementById("myName").value;
-
+function request_server(input, ele) {
     const client = net.createConnection({ port: server_port, host: server_addr }, () => {
         // 'connect' listener.
-        console.log('connected to server!');
-        // send the message
+        console.log(`sending :${input} to server`);
         client.write(`${input}\r\n`);
     });
 
     // get the data from the server
     client.on('data', (data) => {
-        document.getElementById("greet_from_server").innerHTML = data;
+        document.getElementById(ele).innerHTML = data;
         console.log(data.toString());
         client.end();
         client.destroy();
@@ -24,40 +21,12 @@ function client() {
     client.on('end', () => {
         console.log('disconnected from server');
     });
-}
-
-function greeting() {
-
-    // get the element from html
-    var name = document.getElementById("myName").value;
-    // update the content in html
-    // document.getElementById("greet").innerHTML = "Hello " + name + " !";
-    // send the data to the server 
-    client();
-
 }
 
 function send_command(dir, val) {
-    const client = net.createConnection({ port: server_port, host: server_addr }, () => {
-        // 'connect' listener.
-        console.log('connected to server!');
-        // send the message
-        let input = `${dir}:${val}`;
-        // console.log(input);
-        client.write(`${input}\r\n`);
-    });
-
-    // get the data from the server
-    client.on('data', (data) => {
-        document.getElementById("message-to-server").innerHTML = data;
-        console.log(data.toString());
-        client.end();
-        client.destroy();
-    });
-
-    client.on('end', () => {
-        console.log('disconnected from server');
-    });
+    let input = `${dir}:${val}`;
+    let ele = "message-to-server";
+    request_server(input, ele)
 }
 
 function sleep(ms) {
@@ -67,7 +36,8 @@ function sleep(ms) {
 
 async function update_timestamp() {
     while (true) {
-        document.getElementById("timestamp").innerHTML = new Date(Date.now()).toString();
+        // document.getElementById("timestamp").innerHTML = new Date(Date.now()).toString();
+        request_server("ts", "timestamp")
         await sleep(2000);
     }
 }
