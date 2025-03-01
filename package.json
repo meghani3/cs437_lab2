@@ -1,0 +1,12 @@
+{
+  "name": "CS473_lab2",
+  "packageManager": "yarn@4.7.0",
+  "scripts": {
+    "start": "electron .",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "main": "main.js",
+  "devDependencies": {
+    "electron": "^34.3.0"
+  }
+}
