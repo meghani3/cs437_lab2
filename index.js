@@ -1,7 +1,7 @@
 const net = require('net');
 
 var server_port = 1030;
-var server_addr = "172.20.68.125";   // the IP address of your Raspberry PI
+var server_addr = "192.168.0.107";   // the IP address of your Raspberry PI
 
 function request_server(input, ele) {
     const client = net.createConnection({ port: server_port, host: server_addr }, () => {
@@ -12,7 +12,7 @@ function request_server(input, ele) {
 
     // get the data from the server
     client.on('data', (data) => {
-        document.getElementById(ele).innerHTML = data;
+        document.getElementById(ele).innerHTML = data.toString().split('\n').join("<br>");
         console.log(data.toString());
         client.end();
         client.destroy();
@@ -37,7 +37,7 @@ function sleep(ms) {
 async function update_timestamp() {
     while (true) {
         // document.getElementById("timestamp").innerHTML = new Date(Date.now()).toString();
-        request_server("ts", "timestamp")
+        request_server("stats", "timestamp")
         await sleep(2000);
     }
 }
